@@ -1,102 +1,107 @@
-
-//Em Busca dos Trintão
-//concerta a formatacao
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <stdlib.h>
-double maisProx(double ac,double pc,double tc,double wc, double media){ 
-    double ap,pp,tp,wp;//arthur-aproximacao
-    ap = fabs(media-ac);
-    pp = fabs(media-pc);
-    tp = fabs(media-tc);
-    wp = fabs(media-wc);
 
-
-    if(ap < pp && ap < tp && ap < wp){
-        return ac;
-    }else if(pp < ap && pp < tp && pp < wp){
-        return pc;
-    }else if(tp < pp && tp < ap && tp < wp){
-        return tc;
-    }else if(wp < pp && wp < ap && wp < tp){
-        return wc;
-    }else {
-        return 0;
-    }
-
+int menor(int a, int b, int c, int d){
+    return (a<b && a<c && a<d);
 }
 
-double qualOFator(double points){
-    if(points>=0 && points<=20){
-        return 0.2;
+double pont(double p){
+    double i;
+    if(p<=20 && p>=0){
+        i=0.2;
     }
-    if(points>20 && points<=40){
-        return 0.4;
+    if(i>20 && p<=40){
+        i=0.4; 
     }
-    if(points>40 && points<=60){
-        return 0.6;
+    if(i>40 && p<=60){
+        i=0.6; 
     }
-    if(points>60 && points<=80){
-        return 0.8;
-    }else{
-        return 1.0;
+    if(i>60 && p<=80){
+        i=0.8; 
     }
+    if(i>80){
+        i=1; 
+    }
+    return (i*p);
 }
 
-int vencedor(char campp[20], char letra[20],char nome[20],double pt){
-    double pont,fator;
-    if(strcmp(campp,letra)==0){
-            fator = qualOFator(pt);
-            pont = 10 + fator*pt;
-            printf("%s venceu outra vez!\n",nome);
-            printf("Pontuacao +%.2lf",pont);
-    }else{
-            pt += 10;
-            printf("%s venceu!\n",nome);
-            printf("Pontuacao: +10");
-    }
-    return 0;
+int regular(double a){
+    return a<100 && a>0;
 }
 
 int main() {
-	// 'a' Arthur, 'p' Pedro, 't'  Túlio, 'w' Will e 'x' primeira rodada
-    double ap,pp,tp,wp,media,mp,fator,regular,pont;
-    double ac,pc,tc,wc;//athur's choice ou escolha do arthur (ac)
-    char campp[20];
-    scanf("%lf %lf %lf %lf\n",&ap,&pp,&tp,&wp);//pontucacao
-    scanf("%lf %lf %lf %lf\n",&ac,&pc,&tc,&wc);//escolha
-    scanf("%s",campp);
+    double arthur,pedro,tulio,will;
+    double anum,pnum,tnum,wnum,media,fator;
+    char win[4];
+    double adiff,pdiff,tdiff,wdiff;
+    int rodada_valida = 0;
 
-    if(ac,pc,tc,wc){
+    scanf("%lf %lf %lf %lf",&arthur,&pedro,&tulio,&will);
+    scanf("%lf %lf %lf %lf",&anum,&pnum,&tnum,&wnum);
+    scanf("%s",&win); 
+    printf("%d %d\n",win,"w");
 
+    if(regular(anum) && regular(pnum) && regular(tnum) && regular(wnum)){
+        rodada_valida=1;
     }
 
-    media = (ac+pc+tc+wc)/4;
+    if(rodada_valida){
+        media = (anum+pnum+tnum+wnum)/4;    
+        adiff = fabs(anum-media);
+        pdiff = fabs(pnum-media);
+        tdiff = fabs(tnum-media);
+        wdiff = fabs(wnum-media);
 
-    regular = sqrt((ac-media)*(ac-media) + (pc-media)*(pc-media)+ (tc-media)*(tc-media)+ (wc-media)*(wc-media));
+        fator = sqrt(adiff*adiff + pdiff*pdiff + tdiff*tdiff + wdiff*wdiff);
 
-    mp = maisProx(ac,pc,tc,wc,media);
-    if(mp == ac){//a Arthur ap
-        vencedor(campp,"a","Arthur",ap);
-    }else if(mp == pc){//p Pedro pp
-         vencedor(campp,"p","Pedro",pp);
-    }else if(mp == tc){//t Tulio tp
-        vencedor(campp,"t","Tulio",tp);
-    }else if(mp == wc){
-        vencedor(campp,"w","Will",wp);
+        if(fator<=10){
+            arthur+=10;
+            pedro+=10;
+            tulio+=10;
+            will+=10;
+        }
+
+        if(menor(adiff,pdiff,tdiff,wdiff)){
+            arthur+=10;
+            if(1){
+                printf("Arthur venceu outra vez!\nPontuação: %.2lf\n",pont(arthur));
+            }else{
+                printf("Arthur venceu!\nPontuação: +10\n");
+            }
+        }else if(menor(pdiff,adiff,tdiff,wdiff)){
+            pedro+=10;
+            if(1){
+                printf("Pedro venceu outra vez!\nPontuação: %.2lf\n",pont(pedro));
+            }else{
+                printf("Pedro venceu!\nPontuação: +10\n");
+            }
+        }else if(menor(tdiff,pdiff,adiff,wdiff)){
+            tulio+=10;
+            if(1){
+                printf("Túlio venceu outra vez!\nPontuação: %.2lf\n",pont(tulio));
+            }else{
+                printf("Túlio venceu!\nPontuação: +10\n");
+            }
+        }else if(menor(wdiff,pdiff,adiff,tdiff)){
+            will+=10;
+            if(1){
+                printf("Will venceu outra vez!\nPontuação: +%.2lf\n",10+pont(will));
+            }else{
+                printf("Will venceu!\nPontuação: +10\n");
+            }
+        }else{
+            printf("Não foi possível determinar um vencedor :/\nPróxima rodada.\n");
+        }
+
+        if(fator<=10){
+            printf("Houve regularidade na rodada!\nTodos ganharam +10 pontos\n");
+        }
+
+
     }else{
-        printf("Nao foi possivel determinar um vencedor :/\n");
-        printf("Proxima rodada.\n");
+        printf("Números inválidos!\nPróxima rodada.\n");
     }
-
-    if(regular<=10){
-        ap += 10;
-        pp += 10;
-        tp += 10;
-        wp += 10;
-        printf("Houve regularidade na rodada!\nTodos ganharam +10 pontos");
-    }
-   
+    
 }
-
